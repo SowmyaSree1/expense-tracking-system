@@ -1,0 +1,384 @@
+Header files code
+"user_final.h"
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include <time.h>
+#define MAX_YR  2030
+#define MIN_YR  2021
+struct node{
+    int data;
+    struct node *link;
+};//creation of linked list for daily expenses
+struct node *first,*cur,*temp1,*temp2,*t,*head;
+struct node *array[6]={NULL,NULL,NULL,NULL,NULL,NULL};
+struct date{
+    int yyyy;
+    int mm;
+    int dd;
+}getdate;
+int isvalid();
+int leapyear();
+void daily(char mob[]);
+void monthly_record();
+void function(int i);
+void create(int i);
+void insert(int i);
+void total(int i);
+void fun(int );
+void pop(int );
+void push(struct node*);
+void bin();
+void delete_at_pos(int);
+void display(int i);
+char expenses[10][50]={"Groceries","Food and Drinks","Bills and Utilities","Personal Care","Travel","Shopping"};
+int count,groceries,food,bills,personal,travel,shopping,totall,sumof,n,cont=0,pos,i;
+char c,y,Y;
+char k;
+ void daily(char mob[]){
+    FILE *fp;
+    int valid,a,total;
+    char yesno,date_dd[20],date_mm[10],date_yy[10],date[50],buffer[50];
+    printf("Enter the date DD/MM/YYYY");
+    scanf("%d/%d/%d",&getdate.dd,&getdate.mm,&getdate.yyyy);
+    //printf("%d/%d/%d",getdate.dd,getdate.mm,getdate.yyyy);
+    valid=isvalid();
+        itoa(getdate.dd,date_dd,10);
+    itoa(getdate.mm,date_mm,10);
+    itoa(getdate.yyyy,date_yy,10);
+    strcat(date_yy,"/");
+    strcat(date_yy,date_mm);
+    strcat(date_yy,"/");
+    strcat(date_yy,date_dd);
+    strcpy(date,date_yy);
+    if(valid!=1){
+        printf("Enter Valid Date\n");
+        daily(mob);
+        //return;
+    }
+
+    //printf("%s\n",date_yy);
+    gets(date_yy);
+    fp= fopen("date.txt","r");
+     while(fscanf(fp,"%s ",buffer) != EOF)
+	 	{
+             if(strcmp(date,buffer)==0)
+ 		{
+                 printf("DAILY EXPENSES ALREADY APPENDED FOR THIS DATE\n");
+                 daily(mob);
+                 return;
+             }
+	    }
+                do{
+                    printf("1.GROCERIES\n2.FOODS N DRINKS\n3.BILLS N UTILITIES\n4PERSONAL CARE\n5.TRAVEL\n6.SHOPPING\n7.DONE\n");
+                    scanf("%d",&a);
+                    switch (a)
+                    {
+                    case 1:
+                        function(1);
+                        groceries+=totall;
+                        break;
+                    case 2:
+                        function(2);
+                        food+=totall;
+                        break;
+                    case 3:
+                        function(3);
+                        bills+=totall;
+                        break;
+                    case 4:
+                       function(4);
+                      personal+=totall;
+          		 break;
+                    case 5:
+                        function(5);
+                        travel+=totall;
+		  break;
+                    case 6:
+                        function(6);
+                        shopping+=totall;
+                        break;
+                    case 7:
+                    	printf("%d/%d/%d\t%s :%d\t%s :%d\t%s :%d\t%s :%d\t%s :%d\t%s :%d\n",getdate.yyyy,getdate.mm,getdate.dd,expenses[0],groceries,expenses[1],food,expenses[2],bills,expenses[3],personal,expenses[4],travel,expenses[5],shopping);
+						//printf("%s\t%s%d\t%s%d\t%s%d\t%s%d\t%s%d\t%s%d",date,g,groceries,f,food,b,bills,p,personal,t,travel,s,shopping);
+                		printf("do u confirm these details (Y or N):");
+                		fflush(stdin);
+                		scanf("%c",&yesno);
+                		if((yesno=='Y')||(yesno=='y'))
+                		{
+                			strcat(mob,".txt");
+                			fp= fopen(mob,"a");
+                    		fprintf(fp,"%d/%d/%d\t%s :%d\t%s :%d\t%s :%d\t%s :%d\t%s :%d\t%s :%d\n",getdate.yyyy,getdate.mm,getdate.dd,expenses[0],groceries,expenses[1],food,expenses[2],bills,expenses[3],personal,expenses[4],travel,expenses[5],shopping);
+							//fprintf(fp,"%s\t%s%d\t%s%d\t%s%d\t%s%d\t%s%d\t%s%d\n",date,g,groceries,f,food,b,bills,p,personal,t,travel,s,shopping);
+                            fclose(fp);
+                        }
+						break;
+                    default:
+                        printf("ENTER CORRECT OPION\n");
+                        break;
+                    }
+                    if((yesno=='Y')||(yesno=='y'))
+                        break;
+                }while(1);
+                struct node *array[6]={NULL,NULL,NULL,NULL,NULL,NULL};
+        fclose(fp);
+}
+  void create(int i)
+  {
+    printf("Enter the amount");
+    cur=(struct node*)malloc(sizeof(struct node));
+    scanf("%d",&cur->data);
+    cur->link=NULL;
+    first=cur;
+    n=(int)cur->data;
+    return;
+  }
+   void insert(int i)
+  {
+    if(first==NULL)
+    {
+        create(i);
+        
+        return;
+    }
+    else
+    {
+        printf("\nEnter the another amnt :");
+        cur=(struct node*)malloc(sizeof(struct node));
+        scanf("%d",&cur->data);
+        cur->link=0;
+        temp1=first;
+        while(temp1->link!=0)
+        {
+        	temp1=temp1->link;
+		}
+		temp1->link=cur;
+		n=(int)cur->data;
+    }
+  }
+  void total(int i){
+  	//printf("came into total loop");
+  	totall=0;
+    cur=first;
+    printf("\n\t\t\t\t\t");
+    while(cur!=NULL)
+    {
+        printf("%d-",cur->data);
+        n=(int)(cur->data);
+        totall+=n;
+        cont++;
+        cur=cur->link;
+    }
+    return;  	
+  }
+   void delete_at_pos(int i)
+ {
+	 if(first==NULL)
+	{
+	    printf("\n\t\t\t--Linked List Is Empty--");
+    }
+	else
+	{
+		printf("\n\tEnter the position<1-%d> to Delete : ",cont);
+        scanf("%d",&pos);
+        if(pos==1)
+	    {
+    	temp1=first;
+        first=first->link;
+        temp1->link=NULL;
+        printf("\n\t\t\tDeleted Element : %d\n",temp1->data);
+        push(temp1);
+	    }
+        else if(pos>cont)
+        {
+        	printf("\n\t\t\t--INVALID POSITION----");
+		}
+		else
+		{
+			temp1=first;
+			i=1;
+        	while(i<pos)
+        	{
+            	temp2=temp1;
+            	temp1=temp1->link;
+            	i++;
+        	}
+        	printf("\n\t\t\t\tDeleted data is = %d\n",temp1->data);
+        	temp2->link=temp1->link;
+        	push(temp1);
+			
+		}
+	}
+	return;	
+ }
+   void display(int i)
+  {
+    t=first;
+    printf("\n\t\t\t\t\t");
+    cont=0;
+    while(t!=NULL)
+    {
+        printf("%d-",t->data);
+        cont++;
+        t=t->link;
+        
+    }
+    return;
+  }
+void function(int i)
+{
+	int ch,cont=0;
+    while(1)
+    {
+        printf("\n\n1.INSERT\n2.DELETE/UNDO\n3.RETURNto prev switch");
+        printf("\n\n\tEnter option :");scanf("%d",&ch);
+        switch(ch)
+        {
+            //case 1:
+              //  create(i);
+                //display(i);
+                //break;
+            case 1:
+                insert(i);
+                display(i);
+                break;
+            case 2:
+            	fun(i);
+            	break;
+            case 3:
+            	total(i);
+            	bin();
+                printf("\n\t\t--return to main --\n");
+                free(t);
+                first=0;
+                return;
+                break;
+            default : printf("\t\t--INVALID OPTION--");
+        }
+    }
+}
+void pop()
+{
+	int i;
+temp1=head;//poping element from stack
+if(head==NULL)
+{
+	printf("there are no undo elements");
+	return;
+}
+if(head->link==NULL)
+{
+	head=0;
+}
+else
+{
+	while(temp1->link!=NULL)
+	{
+		temp2=temp1;
+		temp1=temp1->link;	
+	}
+	temp2->link=NULL;
+}
+	temp2=first;//poped element to linked list
+	
+	while(temp2->link!=NULL)
+	{
+		temp2=temp2->link;
+	}
+	temp2->link=temp1;
+	display(i);
+	
+}
+	
+	
+void push(struct node *temp1)
+{
+temp1->link=NULL;
+temp2=head;
+if(head==NULL)
+{
+	head=temp1;
+}
+else
+{ 
+	while(temp2->link!=NULL)
+	{
+		temp2=temp2->link;
+	}
+	temp2->link=temp1;
+	
+}
+}
+void bin()
+{
+	while(head==NULL)
+	{
+		return;
+	}
+	printf("\ndo u want append deleted elements y or n: ");
+	fflush(stdin);
+    scanf("%c",&c);
+	if(c=='y'|c=='Y')
+	{		
+	FILE *fb;
+	fb=fopen("delete.txt","a");	
+	temp1=head;
+	while(temp1!=0)
+	{
+		
+		 fprintf(fb,"the deleted elements%d,\n",temp1->data);																														 
+		 temp1=temp1->link;																														  
+	}
+	head=0;
+	fclose(fb);
+}
+else
+{
+	function(i);
+}
+}
+void fun(int i)
+{
+	int ab;
+            	printf("\n\t\t1.DELETE\n\t\t2.UNDO\n\t\t\n3.EXIT");
+            	printf("\t\t\tEnter option :");
+            	scanf("%d",&ab);
+            	switch(ab)
+            	{
+            		case 1:
+            		   delete_at_pos(i);
+            	              display(i);
+            	              break;
+			case 2:
+			    pop();
+			    break;
+			case 3:
+			    return;
+			    break;
+           		default : printf("\t\t--INVALID OPTION--");		
+		}
+}
+int isvalid(){
+    if (getdate.yyyy >  MAX_YR||getdate.yyyy < MIN_YR)
+        return 0;
+    if(getdate.mm<1 || getdate.mm>12)
+        return 0;
+    if(getdate.dd<1 || getdate.dd>31)
+        return 0;
+    if(getdate.mm==2){
+        if(leapyear()){
+            if(getdate.dd>29)
+                return 0;}
+        else{
+            if(getdate.dd>28)
+                return 0;}}
+    if(getdate.mm==4||getdate.mm==6||getdate.mm==9||getdate.mm==11){
+        if(getdate.dd>30)
+            return 0;}
+    return 1;
+}
+int  leapyear()
+{
+    if(((getdate.yyyy % 4 == 0) && (getdate.yyyy % 100 != 0)) ||(getdate.yyyy % 400 == 0))
+        return 1;
+}

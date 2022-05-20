@@ -1,0 +1,191 @@
+Source code 
+Final.c
+#include<stdio.h>
+#include<stdlib.h>
+#include<string.h>
+#include"user_final.h"
+#include"mreport.h"
+void monthly_record(char mob[]);
+struct log_in{
+	char name[50];
+    char mobile[50];
+    char password[50];
+}s;
+void monthly_record();
+void login();
+struct sign{
+	char phone_number[50];
+	char name[50];
+	char pass[50];
+	struct sign*link;
+}*front,*rear;
+struct sign *temp;
+FILE *fp;
+char confirm_pass[50],p[50];
+char na[10]="name",m[10]="mobile_no",pa[10]="password_";
+int flag=0;
+void enqueue()
+{
+	temp = (struct sign*)malloc(sizeof(struct sign));
+	printf("Enter name :");
+	fflush(stdin);
+	gets(temp->name);
+	fp=fopen("User_login.txt","r");
+            while(fscanf(fp,"%s ",p)!= EOF)
+		        {
+		        	//printf("%s",p);
+                    if((strcmp (p,temp->name) == 0)){  //by giving +12 the useranme which is already determined in file gets excluded
+                        printf("\nNAME ALREADY REGISTERED\n");
+                        return;
+                        break;
+                    }
+		        }
+            fclose(fp);
+	printf("Enter phone number :");
+	fflush(stdin);
+	gets(temp->phone_number);
+	   if(strlen(temp->phone_number)!=10){
+            printf("Please enter correct 10 digits phone number\n");
+            enqueue();
+            gets(temp->phone_number);
+            int count=0;
+            count++;
+            if(count>=10){
+                printf("Many number of Incorrect Attempts!!\t Sign up Again!!\n");
+                 enqueue();
+                return;
+            }
+        }
+        fp=fopen("User_login.txt","r");
+            while(fscanf(fp,"%s ",p)!= EOF)
+		        {
+		        	//printf("%s",p);
+                    if((strcmp (p+10,temp->phone_number) == 0)){  //by giving +12 the useranme which is already determined in file gets excluded
+                        printf("\nMOBILE NUMBER ALREDY EXISTS\n");
+                        return;
+                        break;
+                    }
+		        }
+            fclose(fp);
+	 password:
+	printf("Enter your password");
+	fflush(stdin);
+	gets(temp->pass);
+	 printf("confirm your password:");
+    fflush(stdin);
+    gets(confirm_pass);
+    if (strcmp(temp->pass,confirm_pass)==0)
+        {  
+            strcat(p,temp->pass);
+            fprintf(fp,"\n");
+            fprintf(fp,"%s",p);
+            fprintf(fp,"\n");
+            printf("\nRegistration successful");
+        }
+    else
+        {
+            printf("\nPassword Not Matched Re-Enter Again\n");
+            goto password;
+    }
+	if(front==NULL)
+	{
+		front=temp;
+		rear=temp;
+		front->link=NULL;
+		rear->link=NULL;
+	}
+	else
+	{
+		rear->link=temp;
+		rear=temp;
+		rear->link=NULL;
+	}
+	
+}
+void dequeue(){
+	struct sign *temp1,*temp2;
+    fp=fopen("User_login.txt","a");
+    temp1=front;
+    while(temp1!=NULL)
+    {
+    	fprintf(fp,"%s:%s\n%s:%s\n%s:%s\n",na,temp1->name,m,temp1->phone_number,pa,temp1->pass);
+    	temp2=temp1;
+    	temp1=temp1->link;
+    	front=front->link;
+    	free(temp2);
+	}
+	fclose(fp);
+}
+int main(){
+	system("cls");
+    int var;
+    do
+    {   printf("\n\t\t\tWELCOME\t\t\t\n\n");
+        printf("\n1.SIGN UP\n2.LOGIN\n3.EXIT\n");	
+        scanf("%d",&var);
+        switch(var)
+        {
+            case 1:
+                enqueue();
+                dequeue();
+                break;
+            case 2:
+                login();
+                break;
+            case 3:
+                break;
+            default:
+                printf("WRONG OPTION SELECTED -Enter Valid Option: ");
+                break;
+        }
+    }while(var!=3);
+    return 0;
+}
+void login(){
+        int x=0,i,var;
+        fp=fopen("User_login.txt","r");
+		char mob[50],passw[50],password[50],mobile[50];
+        printf("*   LOGIN   **\n\n");
+        fflush(stdin);
+        printf("\nEnter your Mobile NUMBER(unique_id):");
+        fflush(stdin);
+        gets(mob);
+        printf("\nEnter your Password:");
+        fflush(stdin);
+        gets(passw);
+        while(fscanf(fp,"%s %s %s",s.name,s.mobile,s.password) != EOF)
+		{
+            if((strcmp (s.mobile+10,mob) == 0) && (strcmp (s.password+10,passw) == 0 ))
+			{
+                x=1;
+                break;
+            }
+		}
+        if(x==1){
+            printf("*   LOGIN SUCCESSFUL  **\n\n");
+            printf("\t\t\t   WELCOME %s  \t\t\t\n\n",s.name);
+            do{
+                printf("1.INSERT DAILY EXPENSES\n2.VIEW MONTHLY REPORT\n3.CLOSE");
+                scanf("%d",&var);
+                switch(var){
+                    case 1:
+                        daily(mob);
+                        break;
+                    case 2:
+                        monthly_record(mob);
+                        break;
+                    case 3:
+                        break;
+                    default:
+                        printf("Enter Correct Choice\n");
+                    }
+            }while(var!=3);
+        }
+        else
+            printf("\nLogIn Failed!!Return HOME!\n");
+    fclose(fp);
+}
+	void monthly_record(char mob[]){
+    cur1=fun1(mob);
+    add(cur1);
+}
